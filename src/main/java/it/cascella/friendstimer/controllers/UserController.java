@@ -2,6 +2,7 @@ package it.cascella.friendstimer.controllers;
 
 
 import it.cascella.friendstimer.dto.TimerDto;
+import it.cascella.friendstimer.dto.TimerUserDto;
 import it.cascella.friendstimer.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -43,6 +44,10 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
 
+    }
+    @PostMapping("register")
+    public String register(@RequestBody TimerUserDto user){
+        return userService.register(user.name(),user.password());
     }
 
     @GetMapping("/debug/auth")

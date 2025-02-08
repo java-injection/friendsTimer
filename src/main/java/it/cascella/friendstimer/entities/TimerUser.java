@@ -13,13 +13,16 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "user")
-
+@NoArgsConstructor
 public class TimerUser implements UserDetails {
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+
     private String password;
+    @Getter
     @ManyToMany
     @JoinTable(
             name = "user_timer",
@@ -33,6 +36,14 @@ public class TimerUser implements UserDetails {
         return null;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public List<Timer> getTimers() {
+        return timers;
+    }
+
     @Override
     public String getUsername() {
         return name;
@@ -42,19 +53,23 @@ public class TimerUser implements UserDetails {
         return password;
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public void setId(Long id) {
         this.id = id;
     }
 
-    public List<Timer> getTimers() {
-        return timers;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setTimers(List<Timer> timers) {
         this.timers = timers;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -38,7 +38,7 @@ public class ProjectSecurityConfiguration {
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/account","balance","/user/**").authenticated()//necessitano del form login NON NECESSITANO DEL /
-                .requestMatchers(HttpMethod.OPTIONS,"/cards","/contact","/error","/register","/options/**").permitAll()
+                .requestMatchers("/user/register","/cards","/contact","/error","/register","/options/**").permitAll()
 
         );
         http.formLogin(withDefaults());
@@ -108,6 +108,8 @@ public class ProjectSecurityConfiguration {
         Map<String,PasswordEncoder> encoders = new HashMap<>();
         encoders.put("bcrypt", new BCryptPasswordEncoder());
         encoders.put("noop", NoOpPasswordEncoder.getInstance());
-        return new DelegatingPasswordEncoder(idForEncode,encoders);
+        DelegatingPasswordEncoder delegatingPasswordEncoder = new DelegatingPasswordEncoder(idForEncode, encoders);
+        delegatingPasswordEncoder.setDefaultPasswordEncoderForMatches(encoders.get("bcrypt"));
+        return delegatingPasswordEncoder;
     }
 }

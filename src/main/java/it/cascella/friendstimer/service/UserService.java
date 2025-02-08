@@ -57,4 +57,24 @@ public class UserService implements UserDetailsService {
     public String addTimer(String username, TimerDto timerDto) {
         return "metod not implemented yet";
     }
+
+    public String register(String username, String password) {
+        if (timerUserRepository.findByName(username).isPresent()) {
+            return "error";
+        }
+        if(username.contains(" ") || password.contains(" ")){
+            return "error";
+        }
+        if (password.length()<8){
+            return "error";
+        }
+        if (username.length()<4){
+            return "error";
+        }
+        TimerUser user = new TimerUser();
+        user.setName(username);
+        user.setPassword(passwordEncoder.encode(password));
+        timerUserRepository.save(user);
+        return user.getId().toString();
+    }
 }
