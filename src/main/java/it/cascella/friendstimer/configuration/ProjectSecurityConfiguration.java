@@ -26,7 +26,7 @@ public class ProjectSecurityConfiguration {
         http.requiresChannel((requiresChannel) -> requiresChannel.anyRequest().requiresSecure());
         http.csrf(cc -> cc.disable());
         http.authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/account","balance").authenticated()//necessitano del form login NON NECESSITANO DEL /
+                .requestMatchers("/account","balance","user/hello").authenticated()//necessitano del form login NON NECESSITANO DEL /
                 .requestMatchers("/cards","/contact","/error","/register").permitAll()//non necessitano di autenticazione
         );
         http.formLogin(withDefaults());
