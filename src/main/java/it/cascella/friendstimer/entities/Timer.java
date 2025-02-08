@@ -1,19 +1,17 @@
 package it.cascella.friendstimer.entities;
 
+
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "user")
-@Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class User {
+@Table(name = "timer")
+
+public class Timer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
     private String name;
-    private String password;
+
 }
