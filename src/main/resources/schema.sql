@@ -30,6 +30,9 @@ values ("studio", '2021-12-31 23:59:59');
 insert into user (name, password)
 values ("admin", "{noop}admin");
 
+insert into user (name, password)
+values ("topone", "{noop}topogigio");
+
 insert into user_timer (id_user, id_timer)
 values (1, 1);
 

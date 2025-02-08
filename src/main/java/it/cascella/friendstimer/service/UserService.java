@@ -45,12 +45,16 @@ public class UserService implements UserDetailsService {
     }
 
     public List<TimerDto> getUserTimers(String username) {
-        List<Objects[]> userTimers = timerUserRepository.getUserTimers(username);
-        return userTimers.stream()
+        return timerUserRepository.getUserTimers(username);
+        /*return userTimers.stream()
                 .map(objects -> new TimerDto(
                         (String) objects[0].toString(),
                         Timestamp.valueOf(objects[0].toString()).toLocalDateTime()
                         ))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
+    }
+
+    public String addTimer(String username, TimerDto timerDto) {
+        return "metod not implemented yet";
     }
 }

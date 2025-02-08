@@ -4,6 +4,7 @@ import it.cascella.friendstimer.entities.Timer;
 import lombok.Value;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
  * DTO for {@link Timer}
  */
 
-public record TimerDto (String name, LocalDateTime end) implements Serializable {
+public record TimerDto (String name, Timestamp end) implements Serializable {
 
 
     public static TimerDto from(Timer timer) {

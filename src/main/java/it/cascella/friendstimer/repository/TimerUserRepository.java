@@ -1,5 +1,6 @@
 package it.cascella.friendstimer.repository;
 
+import it.cascella.friendstimer.dto.TimerDto;
 import it.cascella.friendstimer.entities.Timer;
 import it.cascella.friendstimer.entities.TimerUser;
 import org.springframework.data.jpa.repository.Query;
@@ -23,6 +24,6 @@ join user_timer on t.id = user_timer.id_user
 join timer tim on user_timer.id_timer = tim.id
 where t.name = :username;
 """, nativeQuery = true)
-    List<Objects[]> getUserTimers(@Param("username") String username);
+    List<TimerDto> getUserTimers(@Param("username") String username);
 
 }

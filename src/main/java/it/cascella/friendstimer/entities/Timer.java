@@ -4,6 +4,7 @@ package it.cascella.friendstimer.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,14 +18,14 @@ public class Timer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private LocalDateTime end;
+    private Timestamp end;
     private String name;
 
     public long getId() {
         return id;
     }
 
-    public LocalDateTime getEnd() {
+    public Timestamp getEnd() {
         return end;
     }
 
