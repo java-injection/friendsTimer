@@ -25,6 +25,15 @@ public class ProjectSecurityConfiguration {
         http.formLogin(withDefaults());
         //http.formLogin(flc -> flc.disable()); //this will disable the form login
 
+        http.sessionManagement(sessionManagement -> sessionManagement
+                .sessionFixation().newSession()
+                .invalidSessionUrl("/timeout")
+                .maximumSessions(1) //numero massimo di sessioni per utente
+                .maxSessionsPreventsLogin(true) // l'effetto sarà che se due utenti sono già loggati al terzo non verrà permesso l'accesso
+                .expiredUrl("/expired") //pagina a cui verrà reindirizzato l'utente se la sessione è scaduta
+        );
+
+
         http.httpBasic(withDefaults());
         //http.httpBasic(hbc -> hbc.disable()); //this will disable the http basic authentication
         return http.build();
