@@ -4,7 +4,10 @@ package it.cascella.friendstimer.controllers;
 import it.cascella.friendstimer.dto.TimerDto;
 import it.cascella.friendstimer.dto.TimerUserDto;
 import it.cascella.friendstimer.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -19,41 +22,48 @@ public class UserController {
         this.userService = userService;
     }
     @GetMapping("/mytimers/{username}")
-    public String myTimers(@PathVariable String username){
+    public ResponseEntity<String> myTimers(@PathVariable String username){
         if (!username.equals(whoAmI())){
-            return "You can't see other people's timers";
+            return new ResponseEntity<>("You can't see other people's timers", HttpStatus.FORBIDDEN);
         }
-        return userService.getUserTimers(username).toString();
+        return new ResponseEntity<>(userService.getUserTimers(username).toString(), HttpStatus.OK);
     }
     @PostMapping("/addtimer/{username}")
-    public String addTimer(@PathVariable String username,@RequestBody TimerDto timerDto){
+    public ResponseEntity<String> addTimer(@PathVariable String username,@RequestBody TimerDto timerDto){
         System.out.println("Richiesta ricevuta da: " + whoAmI());
         System.out.println("Path username: " + username);
         System.out.println("Timer DTO: " + timerDto);
         if (!username.equals(whoAmI())){
-            return "You can't add timers for other people";
+            return new ResponseEntity<>("You can't add timers to other people", HttpStatus.FORBIDDEN);
         }
         if (timerDto==null){
-            return "You can't add a null timer";
+            return new ResponseEntity<>("Timer can't be null", HttpStatus.BAD_REQUEST);
         }
-        return userService.addTimer(username,timerDto).toString();
+        return new ResponseEntity<>(userService.addTimer(username,timerDto).toString(), HttpStatus.OK);
     }
 
-    @GetMapping("/whoami")
+
     private String whoAmI(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
 
     }
-    @PostMapping("register")
-    public String register(@RequestBody TimerUserDto user){
-        return userService.register(user.name(),user.password());
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@Valid @RequestBody  TimerUserDto user){
+        try{
+            userService.register(user.name(),user.password());
+            return new ResponseEntity<>(userService.register(user.name(),user.password()).toString(), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @GetMapping("/debug/auth")
-    public String debugAuth() {
+    public ResponseEntity<String> debugAuth() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return "Authenticated user: " + authentication.getName() + " | Roles: " + authentication.getAuthorities();
+
+        return new ResponseEntity<>(authentication.getName() + " | " + authentication.getAuthorities(), HttpStatus.OK);
     }
 
 

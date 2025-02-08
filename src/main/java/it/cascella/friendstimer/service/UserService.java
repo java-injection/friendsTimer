@@ -60,16 +60,7 @@ public class UserService implements UserDetailsService {
 
     public String register(String username, String password) {
         if (timerUserRepository.findByName(username).isPresent()) {
-            return "error";
-        }
-        if(username.contains(" ") || password.contains(" ")){
-            return "error";
-        }
-        if (password.length()<8){
-            return "error";
-        }
-        if (username.length()<4){
-            return "error";
+            throw new IllegalArgumentException("User already exists");
         }
         TimerUser user = new TimerUser();
         user.setName(username);
