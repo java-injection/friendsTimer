@@ -4,7 +4,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -37,5 +44,14 @@ public class ProjectSecurityConfiguration {
         http.httpBasic(withDefaults());
         //http.httpBasic(hbc -> hbc.disable()); //this will disable the http basic authentication
         return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        String idForEncode = "bcrypt";
+        Map<String,PasswordEncoder> encoders = new HashMap<>();
+        encoders.put("bcrypt", new BCryptPasswordEncoder());
+        encoders.put("noop", NoOpPasswordEncoder.getInstance());
+        return new DelegatingPasswordEncoder(idForEncode,encoders);
     }
 }
