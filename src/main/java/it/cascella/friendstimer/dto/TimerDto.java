@@ -12,10 +12,10 @@ import java.util.List;
  * DTO for {@link Timer}
  */
 
-public record TimerDto (String name, Timestamp end) implements Serializable {
+public record TimerDto (long id,String name, Timestamp end) implements Serializable {
 
 
     public static TimerDto from(Timer timer) {
-        return new TimerDto(timer.getName(), timer.getEnd());
+        return new TimerDto(timer.getId(),timer.getName(), timer.getEnd());
     }
 }

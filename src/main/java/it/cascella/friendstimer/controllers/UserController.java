@@ -51,12 +51,10 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody  TimerUserDto user){
         try{
-            userService.register(user.name(),user.password());
             return new ResponseEntity<>(userService.register(user.name(),user.password()).toString(), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @GetMapping("/debug/auth")

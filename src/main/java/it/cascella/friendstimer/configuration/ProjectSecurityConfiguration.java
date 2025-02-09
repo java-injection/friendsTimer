@@ -37,8 +37,8 @@ public class ProjectSecurityConfiguration {
         http.cors((cors) -> cors.configurationSource(corsConfigurationSource()));
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/account","balance","/user/**").authenticated()//necessitano del form login NON NECESSITANO DEL /
-                .requestMatchers("/user/register","/cards","/contact","/error","/register","/options/**").permitAll()
+                .requestMatchers("/account","balance","/user/mytimers/**","/user/addtimer/**").authenticated()//necessitano del form login NON NECESSITANO DEL /
+                .requestMatchers("/user/register/**","/cards","/contact","/error","/register","/options/**").permitAll()
 
         );
         http.formLogin(withDefaults());
