@@ -4,10 +4,13 @@ import it.cascella.friendstimer.dto.TimerDto;
 import it.cascella.friendstimer.dto.UserTimerProgressDto;
 import it.cascella.friendstimer.entities.Timer;
 import it.cascella.friendstimer.entities.TimerUser;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Time;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -21,6 +24,8 @@ public interface TimerUserRepository extends CrudRepository<TimerUser, Long> {
     TimerUser findByNameAndPassword(String name, String password);
 
 
+
+    @Transactional
     @Query(value = """
 select tim.id, tim.name, tim.expiration_date
 from user t
@@ -30,6 +35,8 @@ where t.name = :username;
 """, nativeQuery = true)
     List<TimerDto> getUserTimers(@Param("username") String username);
 
+
+    @Transactional
     @Query(value = """
 select tim.id_timer, tim.progress
 from user t
@@ -38,4 +45,13 @@ where t.name = :username;
 """, nativeQuery = true)
     List<UserTimerProgressDto> getUserTimersProgressMap(@Param("username") String username);
 
+
+    @Modifying
+    @Transactional
+    @Query(value = """
+UPDATE user_timer t
+SET t.progress = ADDTIME(progress, :progress)
+WHERE id_timer = :timerId AND id_user = (select id from user where name=:username);
+""", nativeQuery = true)
+    void updateProgress(String username, Long timerId, Time progress);
 }

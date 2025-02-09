@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Time;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +60,16 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PostMapping("/updateprogress/{username}/{timerId}/{progress}")
+    private ResponseEntity<String> updateProgress(@PathVariable String username, @PathVariable Long timerId, @PathVariable String progress){
+        if (!username.equals(whoAmI())){
+            return new ResponseEntity<>("You can't update other people's timers", HttpStatus.FORBIDDEN);
+        }
+        LocalTime parsedTime = LocalTime.parse(progress);
+        Time parsedProgressTime = Time.valueOf(parsedTime);
+        System.out.println(parsedProgressTime+" SONO QUI");
+        return new ResponseEntity<>(userService.updateProgress(username,timerId,parsedProgressTime), HttpStatus.OK);
+    }
 
     private String whoAmI(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

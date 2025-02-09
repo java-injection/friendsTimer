@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -67,5 +68,10 @@ public class UserService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(password));
         timerUserRepository.save(user);
         return user.getId().toString();
+    }
+
+    public String updateProgress(String username, Long timerId, Time progress) {
+        timerUserRepository.updateProgress(username, timerId, progress);
+        return "OK";
     }
 }
