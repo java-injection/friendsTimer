@@ -3,8 +3,10 @@ package it.cascella.friendstimer.controllers;
 
 import it.cascella.friendstimer.dto.TimerDto;
 import it.cascella.friendstimer.dto.TimerUserDto;
+import it.cascella.friendstimer.dto.UserTimerProgressDto;
 import it.cascella.friendstimer.service.UserService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,11 +14,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/user")
+@Slf4j
 public class UserController {
 
     private UserService userService;
+
     @Autowired
     public UserController(UserService userService){
         this.userService = userService;
@@ -40,6 +49,14 @@ public class UserController {
             return new ResponseEntity<>("Timer can't be null", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(userService.addTimer(username,timerDto).toString(), HttpStatus.OK);
+    }
+
+    @GetMapping("/mytim/{username}")
+    private ResponseEntity<List<UserTimerProgressDto>> getTimerUserProgress(@PathVariable String username){
+
+        System.out.println("Richiesta ricevuta da: " + whoAmI());
+        List<UserTimerProgressDto> response = userService.getUserTimersProgressMap(username);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 

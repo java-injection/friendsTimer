@@ -6,14 +6,13 @@ import org.hibernate.proxy.HibernateProxy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.time.LocalTime;
+import java.util.*;
 
 @Entity
 @Table(name = "user")
 @NoArgsConstructor
+@AllArgsConstructor
 public class TimerUser implements UserDetails {
     @Getter
     @Id
@@ -30,6 +29,7 @@ public class TimerUser implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "id_timer")
     )
     private List<Timer> timers = new LinkedList<>();
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

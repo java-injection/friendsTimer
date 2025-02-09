@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class Timer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private Timestamp end;
     private String name;
 

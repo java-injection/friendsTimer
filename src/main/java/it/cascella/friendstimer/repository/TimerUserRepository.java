@@ -1,13 +1,17 @@
 package it.cascella.friendstimer.repository;
 
 import it.cascella.friendstimer.dto.TimerDto;
+import it.cascella.friendstimer.dto.UserTimerProgressDto;
 import it.cascella.friendstimer.entities.Timer;
 import it.cascella.friendstimer.entities.TimerUser;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -18,12 +22,20 @@ public interface TimerUserRepository extends CrudRepository<TimerUser, Long> {
 
 
     @Query(value = """
-select tim.name, expiration_date
+select tim.id, tim.name, tim.expiration_date
 from user t
 join user_timer on t.id = user_timer.id_user
 join timer tim on user_timer.id_timer = tim.id
 where t.name = :username;
 """, nativeQuery = true)
     List<TimerDto> getUserTimers(@Param("username") String username);
+
+    @Query(value = """
+select tim.id_timer, tim.progress
+from user t
+join user_timer tim on t.id = tim.id_user
+where t.name = :username;
+""", nativeQuery = true)
+    List<UserTimerProgressDto> getUserTimersProgressMap(@Param("username") String username);
 
 }

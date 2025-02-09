@@ -3,6 +3,7 @@ package it.cascella.friendstimer.service;
 
 
 import it.cascella.friendstimer.dto.TimerDto;
+import it.cascella.friendstimer.dto.UserTimerProgressDto;
 import it.cascella.friendstimer.entities.Timer;
 import it.cascella.friendstimer.entities.TimerUser;
 import it.cascella.friendstimer.repository.TimerUserRepository;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,18 +49,15 @@ public class UserService implements UserDetailsService {
 
     public List<TimerDto> getUserTimers(String username) {
         return timerUserRepository.getUserTimers(username);
-        /*return userTimers.stream()
-                .map(objects -> new TimerDto(
-                        (String) objects[0].toString(),
-                        Timestamp.valueOf(objects[0].toString()).toLocalDateTime()
-                        ))
-                .collect(Collectors.toList());*/
     }
 
     public String addTimer(String username, TimerDto timerDto) {
         return "metod not implemented yet";
     }
 
+    public List<UserTimerProgressDto> getUserTimersProgressMap(String username) {
+        return timerUserRepository.getUserTimersProgressMap(username);
+    }
     public String register(String username, String password) {
         if (timerUserRepository.findByName(username).isPresent()) {
             throw new IllegalArgumentException("User already exists");
