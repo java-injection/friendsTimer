@@ -5,7 +5,9 @@ use timer;
 create table if not exists user(
     id int primary key auto_increment,
     name varchar(50) not null unique,
-    password varchar(100) not null
+    password varchar(100) not null,
+    enabled boolean not null default true,
+    email varchar(100) not null
 );
 
 create table if not exists timer(

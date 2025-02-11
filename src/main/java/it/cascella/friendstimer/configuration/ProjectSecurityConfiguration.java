@@ -38,7 +38,7 @@ public class ProjectSecurityConfiguration {
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/user/mytimers/**","/user/addtimer/**","/user/updateprogress/**","user/mytim/**").authenticated()//necessitano del form login NON NECESSITANO DEL /
-                .requestMatchers("/user/register/**","/error").permitAll()
+                .requestMatchers("/user/register/**","/error","/auth/**").permitAll()
 
         );
         http.formLogin(withDefaults());
@@ -47,7 +47,7 @@ public class ProjectSecurityConfiguration {
         http.sessionManagement(sessionManagement -> sessionManagement
                 .sessionFixation().newSession()
                 .invalidSessionUrl("/timeout")
-                .maximumSessions(1) //numero massimo di sessioni per utente
+                .maximumSessions(10) //numero massimo di sessioni per utente
                 .maxSessionsPreventsLogin(true) // l'effetto sarà che se due utenti sono già loggati al terzo non verrà permesso l'accesso
                 .expiredUrl("/expired") //pagina a cui verrà reindirizzato l'utente se la sessione è scaduta
         );
@@ -61,7 +61,7 @@ public class ProjectSecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:550"));
+        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500"));
          // Aggiungi il tuo frontend
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList(

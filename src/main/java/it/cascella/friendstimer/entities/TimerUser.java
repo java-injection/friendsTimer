@@ -1,6 +1,7 @@
 package it.cascella.friendstimer.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,6 +20,9 @@ public class TimerUser implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+
+    @Email
+    private String mail;
 
     private String password;
     @Getter

@@ -4,6 +4,7 @@ import it.cascella.friendstimer.dto.TimerDto;
 import it.cascella.friendstimer.dto.UserTimerProgressDto;
 import it.cascella.friendstimer.entities.Timer;
 import it.cascella.friendstimer.entities.TimerUser;
+import jakarta.validation.constraints.Email;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -20,6 +21,8 @@ import java.util.Optional;
 
 public interface TimerUserRepository extends CrudRepository<TimerUser, Long> {
     Optional<TimerUser> findByName(String name);
+
+    Boolean existsTimerUsersByMail(@Email String mail);
 
     TimerUser findByNameAndPassword(String name, String password);
 
@@ -54,4 +57,6 @@ SET t.progress = ADDTIME(progress, :progress)
 WHERE id_timer = :timerId AND id_user = (select id from user where name=:username);
 """, nativeQuery = true)
     void updateProgress(String username, Long timerId, Time progress);
+
+    Optional<Object> findByMail(String mail);
 }
