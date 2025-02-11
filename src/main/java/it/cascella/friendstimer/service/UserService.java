@@ -74,4 +74,9 @@ public class UserService implements UserDetailsService {
         timerUserRepository.updateProgress(username, timerId, progress);
         return "OK";
     }
+
+    public void resetPassword(String s, String newPassword) {
+        String encode = passwordEncoder.encode(newPassword);
+
+    }
 }

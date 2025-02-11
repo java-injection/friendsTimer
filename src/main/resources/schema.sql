@@ -7,7 +7,8 @@ create table if not exists user(
     name varchar(50) not null unique,
     password varchar(100) not null,
     enabled boolean not null default true,
-    email varchar(100) not null
+    email varchar(100) not null,
+    unique (email)
 );
 
 create table if not exists timer(
@@ -31,8 +32,8 @@ insert into timer (name, expiration_date)
 values ("studio", '2021-12-31 23:59:59');
 
 
-insert into user (name, password)
-values ("admin", "{noop}admin");
+insert into user (name, password,email)
+values ("admin", "{noop}admin","david.cascella.5@gmail.com");
 
 insert into user (name, password)
 values ("topone", "{noop}topogigio");

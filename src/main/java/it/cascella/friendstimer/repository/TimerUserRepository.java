@@ -59,4 +59,9 @@ WHERE id_timer = :timerId AND id_user = (select id from user where name=:usernam
     void updateProgress(String username, Long timerId, Time progress);
 
     Optional<Object> findByMail(String mail);
+
+    @Query("update TimerUser t set  where t.mail = :mail")
+    @Modifying
+    @Transactional
+    void updateUserPasswordByMail(@Email String mail);
 }
