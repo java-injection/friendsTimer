@@ -2,6 +2,8 @@ package it.cascella.friendstimer.service;
 
 import it.cascella.friendstimer.repository.TimerUserRepository;
 import jakarta.mail.internet.MimeMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -17,6 +19,7 @@ import java.util.UUID;
 
 @Service
 public class EmailService {
+
     private final  JavaMailSender javaMailSender;
     @Value("${spring.mail.username}")
     private String FROM ;
@@ -48,12 +51,14 @@ public class EmailService {
     }
 
     public void resetPassword(String mail) {
-        if (!timerUserRepository.existsTimerUsersByMail(mail)) {
+        if (!timerUserRepository.existsTimerUsersByEmail(mail)) {
+            System.out.println("NESSUNA EMAIL?");
             return;
         }
+        System.out.println("ho questa mail: "+mail);
         String token = UUID.randomUUID().toString();
         Duration ttl = Duration.ofMinutes(20);
-        stringRedisTemplate.opsForValue().set(mail, token,ttl);
+        stringRedisTemplate.opsForValue().set(token, mail,ttl);
         sendEmail(mail, "Password reset", "Click on the following link to reset your password: http://localhost:8080/resetpassword?token=" + token);
     }
 }

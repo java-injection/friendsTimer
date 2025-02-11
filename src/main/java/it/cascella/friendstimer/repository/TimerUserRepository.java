@@ -22,7 +22,7 @@ import java.util.Optional;
 public interface TimerUserRepository extends CrudRepository<TimerUser, Long> {
     Optional<TimerUser> findByName(String name);
 
-    Boolean existsTimerUsersByMail(@Email String mail);
+    Boolean existsTimerUsersByEmail(String mail);
 
     TimerUser findByNameAndPassword(String name, String password);
 
@@ -58,10 +58,10 @@ WHERE id_timer = :timerId AND id_user = (select id from user where name=:usernam
 """, nativeQuery = true)
     void updateProgress(String username, Long timerId, Time progress);
 
-    Optional<Object> findByMail(String mail);
+    Optional<Object> findByEmail(String mail);
 
-    @Query("update TimerUser t set  where t.mail = :mail")
+    @Query("update TimerUser t set t.password = :password where t.email = :email")
     @Modifying
     @Transactional
-    void updateUserPasswordByMail(@Email String mail);
+    void updateUserPasswordByMail(@Email String email,String password);
 }

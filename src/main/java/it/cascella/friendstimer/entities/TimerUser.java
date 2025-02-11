@@ -22,7 +22,7 @@ public class TimerUser implements UserDetails {
     private String name;
 
     @Email
-    private String mail;
+    private String email;
 
     private String password;
     @Getter

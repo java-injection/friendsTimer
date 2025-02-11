@@ -75,8 +75,9 @@ public class UserService implements UserDetailsService {
         return "OK";
     }
 
-    public void resetPassword(String s, String newPassword) {
+    public void resetPassword(String email, String newPassword) {
         String encode = passwordEncoder.encode(newPassword);
-
+        System.out.println(newPassword+" diventa: "+encode);
+        timerUserRepository.updateUserPasswordByMail(email,encode);
     }
 }

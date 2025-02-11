@@ -38,7 +38,7 @@ public class ProjectSecurityConfiguration {
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/user/mytimers/**","/user/addtimer/**","/user/updateprogress/**","user/mytim/**").authenticated()//necessitano del form login NON NECESSITANO DEL /
-                .requestMatchers("/user/register/**","/error","/auth/**").permitAll()
+                .requestMatchers("/user/register/**","/error","/mail/**","/resetpassword/**").permitAll()
 
         );
         http.formLogin(withDefaults());
