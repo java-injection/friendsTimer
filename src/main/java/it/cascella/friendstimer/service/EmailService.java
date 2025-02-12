@@ -25,6 +25,7 @@ public class EmailService {
     private String FROM ;
     private final TimerUserRepository timerUserRepository;
     private final StringRedisTemplate stringRedisTemplate;
+    private final static String URL = "http://localhost:8080";
 
     @Autowired
     public EmailService(JavaMailSender javaMailSender, TimerUserRepository timerUserRepository,StringRedisTemplate stringRedisTemplate) {
@@ -52,13 +53,11 @@ public class EmailService {
 
     public void resetPassword(String mail) {
         if (!timerUserRepository.existsTimerUsersByEmail(mail)) {
-            System.out.println("NESSUNA EMAIL?");
             return;
         }
-        System.out.println("ho questa mail: "+mail);
         String token = UUID.randomUUID().toString();
         Duration ttl = Duration.ofMinutes(20);
         stringRedisTemplate.opsForValue().set(token, mail,ttl);
-        sendEmail(mail, "Password reset", "Click on the following link to reset your password: http://localhost:8080/resetpassword?token=" + token);
+        sendEmail(mail, "Password reset", "Click on the following link to reset your password: "+URL+"/resetpassword?token=" + token);
     }
 }
