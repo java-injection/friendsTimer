@@ -1,9 +1,15 @@
 package it.cascella.friendstimer.controllers;
 
+import it.cascella.friendstimer.dto.PasswordDto;
 import it.cascella.friendstimer.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.http.HttpResponse;
 
 @RestController
 @RequestMapping("/resetpassword")
@@ -18,14 +24,14 @@ public class ResetPasswordController {
     }
 
 
-    @PostMapping("{token}/{newPassword}")
-    public void resetPassword(@PathVariable String token, @PathVariable String newPassword) {
+    @PostMapping("")
+    public ResponseEntity<String> resetPassword(@RequestBody String token, @RequestBody @Valid PasswordDto newPassword) {
         String email = stringRedisTemplate.opsForValue().get(token);
-        System.out.println(token+" e la nuova pswd: "+newPassword);
         if (email==null||email.isBlank()){
             System.out.println("nono ho trovato nulla");
-            return;
+            return new ResponseEntity<>("Invalid Token", HttpStatus.NOT_FOUND);
         }
-        userService.resetPassword(email,newPassword);
+        stringRedisTemplate.delete(token);
+        return userService.resetPassword(email,newPassword.password());
     }
 }

@@ -8,6 +8,8 @@ import it.cascella.friendstimer.entities.Timer;
 import it.cascella.friendstimer.entities.TimerUser;
 import it.cascella.friendstimer.repository.TimerUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -75,9 +77,13 @@ public class UserService implements UserDetailsService {
         return "OK";
     }
 
-    public void resetPassword(String email, String newPassword) {
+    public ResponseEntity<String> resetPassword(String email, String newPassword) {
         String encode = passwordEncoder.encode(newPassword);
-        System.out.println(newPassword+" diventa: "+encode);
-        timerUserRepository.updateUserPasswordByMail(email,encode);
+        try {
+            timerUserRepository.updateUserPasswordByMail(email, encode);
+            return new ResponseEntity<>("Password updated", HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>("Error updating password", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
