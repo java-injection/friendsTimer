@@ -23,15 +23,14 @@ public class ResetPasswordController {
         this.userService=userService;
     }
 
-
     @PostMapping("")
-    public ResponseEntity<String> resetPassword(@RequestBody String token, @RequestBody @Valid PasswordDto newPassword) {
-        String email = stringRedisTemplate.opsForValue().get(token);
+    public ResponseEntity<String> resetPassword(@RequestBody @Valid PasswordDto newPassword) {
+        String email = stringRedisTemplate.opsForValue().get(newPassword.token());
         if (email==null||email.isBlank()){
             System.out.println("nono ho trovato nulla");
             return new ResponseEntity<>("Invalid Token", HttpStatus.NOT_FOUND);
         }
-        stringRedisTemplate.delete(token);
+        stringRedisTemplate.delete(newPassword.token());
         return userService.resetPassword(email,newPassword.password());
     }
 }
