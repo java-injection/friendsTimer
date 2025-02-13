@@ -1,4 +1,4 @@
-FROM openjdk:21
+FROM openjdk:23
 
 # Definisci la directory di lavoro all'interno del container
 WORKDIR /app
