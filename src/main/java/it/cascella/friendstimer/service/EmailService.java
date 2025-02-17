@@ -2,8 +2,7 @@ package it.cascella.friendstimer.service;
 
 import it.cascella.friendstimer.repository.TimerUserRepository;
 import jakarta.mail.internet.MimeMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -11,12 +10,12 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.UUID;
 
 
+@Slf4j
 @Service
 public class EmailService {
 
@@ -36,8 +35,7 @@ public class EmailService {
 
     public void sendEmail(String to, String subject, String text) {
         try {
-            System.out.println("Sending email tfrom: " + FROM);
-            System.out.println("Sending email to: " + to);
+            log.info("Sending email to: " + to);
             MimeMessage mail = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mail, true);
             helper.setFrom(FROM);
@@ -45,7 +43,6 @@ public class EmailService {
             helper.setSubject(subject);
             helper.setText(text, true);
             javaMailSender.send(mail);
-            System.out.println("Email sent");
         } catch (Exception e) {
             e.printStackTrace();
         }

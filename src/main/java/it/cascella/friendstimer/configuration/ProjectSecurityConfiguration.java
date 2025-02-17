@@ -1,5 +1,6 @@
 package it.cascella.friendstimer.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -28,7 +29,8 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 
 public class ProjectSecurityConfiguration {
-
+    @Value("${allowed.origins}" )
+    private String allowedOrigins;
 
 
     @Bean
@@ -57,11 +59,11 @@ public class ProjectSecurityConfiguration {
         //http.httpBasic(hbc -> hbc.disable()); //this will disable the http basic authentication
         return http.build();
     }
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+        List<String> split = List.of(allowedOrigins.split(","));
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500"));
+        configuration.setAllowedOrigins(split);
          // Aggiungi il tuo frontend
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList(

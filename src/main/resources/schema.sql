@@ -31,9 +31,9 @@ create table if not exists user_timer(
 insert into timer (name, expiration_date)
 values ("studio", '2021-12-31 23:59:59');
 
-
-insert into user (name, password,email)
-values ("admin", "{noop}admin","david.cascella.5@gmail.com");
+delete from user;
+insert into user (id,name, password,email)
+values (1,"admin", "{noop}admin","david.cascella.5@gmail.com");
 
 insert into user (name, password)
 values ("topone", "{noop}topogigio");
@@ -46,5 +46,19 @@ from user t
 join user_timer on t.id = user_timer.id_user
 join timer tim on user_timer.id_timer = tim.id
 where t.name = "admin";
+
+select * from user;
+select * from timer;
+select * from user_timer;
+
+insert into user_timer (id_user, id_timer,progress)
+values (1, 1, '00:30:00');
+
+select tim.id_timer, tim.progress
+from user t
+         join user_timer tim on t.id = tim.id_user
+where t.name like "admin";
+select * from timer;
+
 
 select * from user;
