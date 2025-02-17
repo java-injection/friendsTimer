@@ -61,9 +61,16 @@ public class ProjectSecurityConfiguration {
     }
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+
         List<String> split = List.of(allowedOrigins.split(","));
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(split);
+        if (allowedOrigins.equals("*")){
+            configuration.setAllowCredentials(false);
+            configuration.setAllowedOrigins(List.of("*"));
+        }else{
+            configuration.setAllowCredentials(true);
+            configuration.setAllowedOrigins(split);
+        }
          // Aggiungi il tuo frontend
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList(
@@ -81,7 +88,7 @@ public class ProjectSecurityConfiguration {
                 "Access-Control-Request-Headers",
                 "Access-Control-Request-Method",
                 "Origin"));
-        configuration.setAllowCredentials(true);
+
         configuration.setExposedHeaders(Arrays.asList(
                 "Authorization",
                 "Content-Type",
