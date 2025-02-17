@@ -1,5 +1,6 @@
 package it.cascella.friendstimer.configuration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,7 @@ import java.util.Map;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 
@@ -61,12 +63,14 @@ public class ProjectSecurityConfiguration {
     }
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-
+        log.info("Allowed origins: " + allowedOrigins);
         List<String> split = List.of(allowedOrigins.split(","));
         CorsConfiguration configuration = new CorsConfiguration();
         if (allowedOrigins.equals("*")){
+            log.info("Setting allowCredentials to false");
+            configuration.setAllowedOriginPatterns(List.of("*")); // Usa allowedOriginPatterns
             configuration.setAllowCredentials(false);
-            configuration.setAllowedOrigins(List.of("*"));
+
         }else{
             configuration.setAllowCredentials(true);
             configuration.setAllowedOrigins(split);
