@@ -1,6 +1,8 @@
 package it.cascella.friendstimer.configuration;
 
+import it.cascella.friendstimer.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +36,15 @@ public class ProjectSecurityConfiguration {
     @Value("${allowed.origins}" )
     private String allowedOrigins;
 
+    @Value("${rememeber.me.key}")
+    private String rememberMe;
+
+    private final UserService userService;
+
+    @Autowired
+    public ProjectSecurityConfiguration(UserService userService) {
+        this.userService = userService;
+    }
 
     @Bean
     SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
@@ -47,13 +58,16 @@ public class ProjectSecurityConfiguration {
         );
         http.formLogin(withDefaults());
         //http.formLogin(flc -> flc.disable()); //this will disable the form login
-
+        http.rememberMe(r -> r
+                .key(rememberMe)
+                .tokenValiditySeconds(86400)).userDetailsService(userService);
         http.sessionManagement(sessionManagement -> sessionManagement
                 .sessionFixation().newSession()
                 .invalidSessionUrl("/timeout")
-                .maximumSessions(10) //numero massimo di sessioni per utente
+                .maximumSessions(20) //numero massimo di sessioni per utente
                 .maxSessionsPreventsLogin(true) // l'effetto sarà che se due utenti sono già loggati al terzo non verrà permesso l'accesso
-                .expiredUrl("/expired") //pagina a cui verrà reindirizzato l'utente se la sessione è scaduta
+                .expiredUrl("/expired")
+                //pagina a cui verrà reindirizzato l'utente se la sessione è scaduta
         );
 
 
