@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -40,10 +41,14 @@ public class ProjectSecurityConfiguration {
     private String rememberMe;
 
     private final UserService userService;
+    private CustomAuthenticationProvider authenticationProvider;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public ProjectSecurityConfiguration(UserService userService) {
+    public ProjectSecurityConfiguration(UserService userService,PasswordEncoder passwordEncoder, CustomAuthenticationProvider authenticationProvider) {
         this.userService = userService;
+        this.authenticationProvider = authenticationProvider;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Bean
@@ -56,11 +61,15 @@ public class ProjectSecurityConfiguration {
                 .requestMatchers("/user/register/**","/error","/mail/**","/resetpassword/**").permitAll()
 
         );
+        http.authenticationProvider(authenticationProvider);
         http.formLogin(withDefaults());
         //http.formLogin(flc -> flc.disable()); //this will disable the form login
         http.rememberMe(r -> r
                 .key(rememberMe)
-                .tokenValiditySeconds(86400)).userDetailsService(userService);
+                .tokenValiditySeconds(86400)
+                .useSecureCookie(true)
+        ).userDetailsService(userService)
+                ;
         http.sessionManagement(sessionManagement -> sessionManagement
                 .sessionFixation().newSession()
                 .invalidSessionUrl("/timeout")
@@ -129,14 +138,5 @@ public class ProjectSecurityConfiguration {
     }
 
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        String idForEncode = "bcrypt";
-        Map<String,PasswordEncoder> encoders = new HashMap<>();
-        encoders.put("bcrypt", new BCryptPasswordEncoder());
-        encoders.put("noop", NoOpPasswordEncoder.getInstance());
-        DelegatingPasswordEncoder delegatingPasswordEncoder = new DelegatingPasswordEncoder(idForEncode, encoders);
-        delegatingPasswordEncoder.setDefaultPasswordEncoderForMatches(encoders.get("bcrypt"));
-        return delegatingPasswordEncoder;
-    }
+
 }
