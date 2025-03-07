@@ -19,6 +19,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -31,13 +32,14 @@ public class UserController {
     public UserController(UserService userService){
         this.userService = userService;
     }
-    @GetMapping("/mytimers/{username}")
-    public ResponseEntity<String> myTimers(@PathVariable String username){
-        if (!username.equals(whoAmI())){
-            return new ResponseEntity<>("You can't see other people's timers", HttpStatus.FORBIDDEN);
-        }
-        return new ResponseEntity<>(userService.getUserTimers(username).toString(), HttpStatus.OK);
+
+
+    @GetMapping("/mytimers")
+    public ResponseEntity<List<TimerDto>> myTimers(){
+        List<TimerDto> userTimers = userService.getUserTimers(whoAmI());
+        return new ResponseEntity<>(userTimers, HttpStatus.OK);
     }
+
     @PostMapping("/addtimer/{username}")
     public ResponseEntity<String> addTimer(@PathVariable String username,@RequestBody TimerDto timerDto){
         System.out.println("Richiesta ricevuta da: " + whoAmI());
@@ -83,6 +85,12 @@ public class UserController {
         }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/id")
+    public ResponseEntity<String> home() {
+        Optional<Long> userId = userService.getUserId(whoAmI());
+        return userId.map(aLong -> new ResponseEntity<>(aLong.toString(), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/debug/auth")

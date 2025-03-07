@@ -64,4 +64,9 @@ WHERE id_timer = :timerId AND id_user = (select id from user where name=:usernam
     @Modifying
     @Transactional
     void updateUserPasswordByMail(@Email String email,String password);
+
+    @Query(value = """
+        SELECT id FROM user WHERE name = :name
+        """, nativeQuery = true)
+    Optional<Long> findIdByName(String name);
 }

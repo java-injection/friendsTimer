@@ -86,4 +86,8 @@ public class UserService implements UserDetailsService {
             return new ResponseEntity<>("Error updating password", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    public Optional<Long> getUserId(String name) {
+        return timerUserRepository.findIdByName(name);
+    }
 }
