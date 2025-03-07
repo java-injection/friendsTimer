@@ -40,48 +40,40 @@ public class UserController {
         return new ResponseEntity<>(userTimers, HttpStatus.OK);
     }
 
-    @PostMapping("/addtimer/{username}")
-    public ResponseEntity<String> addTimer(@PathVariable String username,@RequestBody TimerDto timerDto){
-        System.out.println("Richiesta ricevuta da: " + whoAmI());
-        System.out.println("Path username: " + username);
-        System.out.println("Timer DTO: " + timerDto);
-        if (!username.equals(whoAmI())){
-            return new ResponseEntity<>("You can't add timers to other people", HttpStatus.FORBIDDEN);
-        }
+    @PostMapping("/addtimer")
+    public ResponseEntity<String> addTimer(@RequestBody TimerDto timerDto){
+        log.info("Richiesta ricevuta da: {}", whoAmI());
+        log.info("Timer DTO: {}", timerDto);
+
         if (timerDto==null){
             return new ResponseEntity<>("Timer can't be null", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(userService.addTimer(username,timerDto).toString(), HttpStatus.OK);
+        String s = userService.addTimer(whoAmI(), timerDto);
+        return new ResponseEntity<>(s, HttpStatus.OK);
     }
 
-    @GetMapping("/mytim/{username}")
-    private ResponseEntity<List<UserTimerProgressDto>> getTimerUserProgress(@PathVariable String username){
-
-        System.out.println("Richiesta ricevuta da: " + whoAmI());
-        List<UserTimerProgressDto> response = userService.getUserTimersProgressMap(username);
+    @GetMapping("/mytim")
+    private ResponseEntity<List<UserTimerProgressDto>> getTimerUserProgress(){
+        String user = whoAmI();
+        log.info("Richiesta ricevuta da: {}", whoAmI());
+        List<UserTimerProgressDto> response = userService.getUserTimersProgressMap(user);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/updateprogress/{username}/{timerId}/{progress}")
-    private ResponseEntity<String> updateProgress(@PathVariable String username, @PathVariable Long timerId, @PathVariable String progress){
-        if (!username.equals(whoAmI())){
-            return new ResponseEntity<>("You can't update other people's timers", HttpStatus.FORBIDDEN);
-        }
+    @PostMapping("/updateprogress/{timerId}/{progress}")
+    private ResponseEntity<String> updateProgress(@PathVariable Long timerId, @PathVariable String progress){
+        String user = whoAmI();
         LocalTime parsedTime = LocalTime.parse(progress);
         Time parsedProgressTime = Time.valueOf(parsedTime);
         System.out.println(parsedProgressTime+" SONO QUI");
-        return new ResponseEntity<>(userService.updateProgress(username,timerId,parsedProgressTime), HttpStatus.OK);
+        return new ResponseEntity<>(userService.updateProgress(user,timerId,parsedProgressTime), HttpStatus.OK);
     }
 
-    private String whoAmI(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getName();
 
-    }
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody  TimerUserDto user){
+    public ResponseEntity<String> register(@Valid @RequestBody TimerUserDto user){
         try{
-            return new ResponseEntity<>(userService.register(user.name(),user.password()).toString(), HttpStatus.OK);
+            return new ResponseEntity<>(userService.register(user.name(),user.password()), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -100,5 +92,9 @@ public class UserController {
         return new ResponseEntity<>(authentication.getName() + " | " + authentication.getAuthorities(), HttpStatus.OK);
     }
 
+    private String whoAmI(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
 
+    }
 }
