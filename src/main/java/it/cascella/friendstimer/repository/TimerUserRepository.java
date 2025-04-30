@@ -58,6 +58,15 @@ WHERE id_timer = :timerId AND id_user = (select id from user where name=:usernam
 """, nativeQuery = true)
     void updateProgress(String username, Long timerId, Time progress);
 
+    @Modifying
+    @Transactional
+    @Query(value = """
+UPDATE user_timer t
+SET t.progress = ADDTIME(progress, :progress)
+WHERE id_timer = :timerId AND id_user = :userId;
+""", nativeQuery = true)
+    void updateProgressById(Long userId, Long timerId, Time progress);
+
     Optional<Object> findByEmail(String mail);
 
     @Query("update TimerUser t set t.password = :password where t.email = :email")

@@ -67,9 +67,13 @@ public class ProjectSecurityConfiguration {
         http.rememberMe(r -> r
                 .key(rememberMe)
                 .tokenValiditySeconds(86400)
-                .useSecureCookie(true)
-        ).userDetailsService(userService)
-                ;
+                .useSecureCookie(false)
+        ).userDetailsService(userService);
+        http.exceptionHandling(ex -> ex
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.sendError(401, "Unauthorized"); // Ritorna 401 invece di reindirizzare
+                })
+        );
         http.sessionManagement(sessionManagement -> sessionManagement
                 .sessionFixation().newSession()
                 .invalidSessionUrl("/timeout")

@@ -81,6 +81,12 @@ public class UserController {
 
     @GetMapping("/id")
     public ResponseEntity<String> home() {
+        log.info("Richiesta ricevuta da: {}", whoAmI());
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         Optional<Long> userId = userService.getUserId(whoAmI());
         return userId.map(aLong -> new ResponseEntity<>(aLong.toString(), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND));
     }
